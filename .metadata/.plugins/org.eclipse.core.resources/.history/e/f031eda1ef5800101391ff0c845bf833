@@ -1,0 +1,18 @@
+import java.time.*;
+
+
+public class Main {
+ public static void main(String[]args){
+	 
+	 Customer customer=new Customer("Ibrahim",10000);
+	 MayExpireShippableProduct cheese=new MayExpireShippableProduct("Cheese",150.0,2,LocalDate.now().plusDays(5),2);
+	 MayExpireNonShippableProduct biscuits=new MayExpireNonShippableProduct("Biscuits",300.0,15,LocalDate.now().plusDays(5));
+	 ShippableProduct tv=new ShippableProduct("TV",500.0,20,10);
+	 NonShippableProduct msc=new NonShippableProduct("Mobile scratch cards",400.0,15);
+	 customer.addToCart(cheese,3);
+	 customer.addToCart(biscuits,2);
+	 customer.addToCart(tv,2);
+	 customer.addToCart(msc,4);
+	 customer.checkout();
+ }
+}

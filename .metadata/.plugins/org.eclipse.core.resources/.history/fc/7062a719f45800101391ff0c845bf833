@@ -1,0 +1,52 @@
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Checkout {
+ private static void shipmentService(Cart c){
+	 HashMap<Shippable,Integer> shipment=c.sendToShipment();
+	 if(!shipment.isEmpty()){
+		 System.out.println("**Shipment Notice**");
+	 double totalWeight=0;
+	 for(Map.Entry<Shippable,Integer> entry:shipment.entrySet()){
+		 totalWeight+=entry.getKey().getWeight();
+		 System.out.println(entry.getValue()+"X "+entry.getKey().getName()+"     "+entry.getKey().getWeight());
+		 
+	 }
+	 System.out.println("Total package weight: "+totalWeight);
+	 }
+ }
+ public static void checkOut(Customer c){
+	 Cart cart=c.getCart();
+	 //Check if the cart is Empty
+	 if(cart.isEmpty())
+		 throw new RuntimeException("Cart is Empty");
+	 //Calculate the subTotal,fees,totalCost
+	 double subTotal=cart.calcSubTotal();
+	 double shippingFees=cart.calcShippingFees();
+	 double totalCost=subTotal+shippingFees;
+	 //check funds
+	 if(c.getBalance()<totalCost)
+		 throw new RuntimeException("Insufficient funds");
+	 //check for expired products
+	 for(Product p:cart.getItems().keySet()){
+		 if(p.isExpired())
+			 throw new RuntimeException("Product:"+p.getName()+" expired");
+	 }
+	 //perform the purchase
+	 c.reduceBalance(totalCost);
+	 //print the receipt
+	 shipmentService(cart);
+	 System.out.println();
+	 System.out.println("** Checkout receipt **");
+	 for(Map.Entry<Product,Integer> entry:cart.getItems().entrySet()){
+		 System.out.println(entry.getValue()+"X "+entry.getKey().getName()+"     "+entry.getKey().getPrice());
+	 }
+	 System.out.println("------------------------------------");
+	 System.out.println("Subtotal: "+subTotal);
+	 System.out.println("shippingFees: "+shippingFees);
+	 System.out.println("Amount: "+totalCost);
+	 System.out.println();
+	 System.out.println("Current balance after payment: "+c.getBalance());
+ }
+}
